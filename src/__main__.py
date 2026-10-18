@@ -19,6 +19,7 @@ def main():
     py_splitter = PythonSplitter(documents["py"])
     py_chunks = py_splitter.split()
 
+    #tokenizing
 
 
 if __name__ == "__main__":

@@ -26,11 +26,21 @@ class DocumentLoader():
             elif element.suffix() == ".py":
                 py.append(element)
 
-        documents["py"] = py
-        documents["txt"] = text
-        documents["md"] = md
+        print(f"Start Loading...")
+        documents["py"] = self.load_content(py)
+        documents["txt"] = self.load_content(text)
+        documents["md"] = self.load_content(md)
 
         return documents
+
+    def load_content(self, files: List[Path]) -> List[str]:
+        content: List[str] = []
+        for file in files:
+
+            with open(file) as f:
+                content.append(f.read())
+
+        return content
 
 
 class TextLoad():

@@ -1,7 +1,7 @@
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from .documents_loader import DocumentLoader, Document
 from .document_splitter import TextSplitter, PythonSplitter
-from typing import List, Dict, Any
+from typing import List
 
 
 def main():

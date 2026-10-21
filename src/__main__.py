@@ -1,6 +1,6 @@
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from .documents_loader import DocumentLoader, Document
-from .document_splitter import TextSplitter, PythonSplitter
+from .document_splitter import RecursiveTextSplitter, PythonSplitter
 from typing import List
 
 
@@ -12,8 +12,11 @@ def main():
     documents: List[Document] = doc_loader.load()
 
     #chunking txt and md files
-    text_splitter = TextSplitter(documents["txt"], documents["md"])
+    text_splitter = RecursiveTextSplitter(documents["txt"], documents["md"])
     chunks = text_splitter.split()
+    print(f"{'#' * 10} chunks {'#' * 10}")
+    print(chunks)
+    print(len(chunks))
 
     #chunk python files
     py_splitter = PythonSplitter(documents["py"])

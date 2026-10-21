@@ -2,7 +2,7 @@ from typing import List, Dict, Any
 from langchain_core.documents import Document
 
 
-class TextSplitter():
+class RecursiveTextSplitter():
     def __init__(self,
                  dotmd: List,
                  dotxt: List,
@@ -19,24 +19,44 @@ class TextSplitter():
         data: List[Document] = self.dotmd
 
         for text in data:
-            container.extend(self.recursive_text_splitter(text))
 
-    def recursive_text_splitter(self,
-                                text: str,
-                                sep: str, 
-                                metadata: Dict[str, str]) -> Document:
+            container.extend(self.text_splitter(text.page_content, self.separators, text.metadata["source"]))
+
+        return container
+
+    def text_splitter(self,
+                      text: str,
+                      sep: str, 
+                      source: str) -> Document:
+
         chunks: List[Document] = []
         start_index: int = 0
 
-        for index, char in enumerate(text):
-            if char == sep:
-                if index > self.chunk_size:
-                    self.recursive_text_splitter(text, next(self.separators))            
-                else:
-                    chunks.append(Document(page_content=text[start_index:index+1],
-                                           metadata=metadata))
-                    start_index = index+1
-                
+
+        splits = text.split(sep[0])
+        for split in splits:
+            start_index = 
+            if len(split) > self.chunk_size:
+                chunks += self.text_splitter(text[start_index:index+1], sep[1:])
+            else:
+                chunks.append(Document(page_content=text[start_index:index+1],
+                                       metadata={"source": source,
+                                                 "first_character_index": start_index,
+                                                 "last_character_index": index}))
+        # for index, char in enumerate(text):
+        #     print(sep[0])
+        #     if char == sep[0]:
+        #         print(sep)
+        #         if index > self.chunk_size:
+        #             chunks += self.text_splitter(text[start_index:index+1], sep[1:])      
+        #         else:
+        #             chunks.append(Document(page_content=text[start_index:index+1],
+        #                                    metadata={"source": source,
+        #                                              "first_character_index": start_index,
+        #                                              "last_character_index": index}))
+        #             start_index = index+1
+
+        return chunks                
 
 
 class PythonSplitter():

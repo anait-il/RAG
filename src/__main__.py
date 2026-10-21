@@ -15,8 +15,9 @@ def main():
     text_splitter = RecursiveTextSplitter(documents["txt"], documents["md"])
     chunks = text_splitter.split()
     print(f"{'#' * 10} chunks {'#' * 10}")
-    print(chunks)
+    print(chunks[0:10])
     print(len(chunks))
+
 
     #chunk python files
     py_splitter = PythonSplitter(documents["py"])

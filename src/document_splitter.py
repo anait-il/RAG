@@ -26,23 +26,25 @@ class RecursiveTextSplitter():
 
     def text_splitter(self,
                       text: str,
-                      sep: str, 
-                      source: str) -> Document:
+                      sep: List[str], 
+                      source: str,
+                      start_index: int = 0) -> Document:
 
         chunks: List[Document] = []
-        start_index: int = 0
-
-
         splits = text.split(sep[0])
+
         for split in splits:
-            start_index = 
+
+            end_index = len(split) - 1
             if len(split) > self.chunk_size:
-                chunks += self.text_splitter(text[start_index:index+1], sep[1:])
+                chunks += self.text_splitter(split, sep[1:], source, start_index)
             else:
-                chunks.append(Document(page_content=text[start_index:index+1],
+                chunks.append(Document(page_content=split,
                                        metadata={"source": source,
                                                  "first_character_index": start_index,
-                                                 "last_character_index": index}))
+                                                 "last_character_index":end_index})) 
+            start_index = end_index + 1
+ 
         # for index, char in enumerate(text):
         #     print(sep[0])
         #     if char == sep[0]:

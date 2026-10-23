@@ -7,17 +7,15 @@ from typing import List
 def main():
 
     path: str = "vllm-0.10.1"
+
     #Load files
     doc_loader = DocumentLoader(path)
     documents: List[Document] = doc_loader.load()
 
     #chunking txt and md files
-    text_splitter = RecursiveTextSplitter(documents["txt"], documents["md"])
-    chunks = text_splitter.split()
-    print(f"{'#' * 10} chunks {'#' * 10}")
-    print(chunks[0:10])
-    print(len(chunks))
-
+    text_splitter = RecursiveTextSplitter()
+    chunks = text_splitter.split_documents(documents["txt"]+documents["md"])
+    print(f"number of files => {len(documents['md']+documents["txt"])}, number of chunks => {len(chunks)}")
 
     #chunk python files
     py_splitter = PythonSplitter(documents["py"])

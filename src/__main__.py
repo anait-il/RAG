@@ -13,15 +13,17 @@ def main():
     documents: List[Document] = doc_loader.load()
 
     #chunking txt and md files
-    text_splitter = RecursiveTextSplitter()
-    chunks = text_splitter.split_documents(documents["txt"]+documents["md"])
-    print(f"number of files => {len(documents['md']+documents["txt"])}, number of chunks => {len(chunks)}")
+    # text_splitter = RecursiveTextSplitter()
+    # chunks = text_splitter.split_documents(documents["txt"]+documents["md"])
+    # print(f"number of files => {len(documents['md']+documents["txt"])}, number of chunks => {len(chunks)}")
 
     #chunk python files
-    py_splitter = PythonSplitter()
+    py_splitter = PythonSplitter(chunk_size=2)
     py_chunks = py_splitter.split_documents(documents["py"])
-    print("_" * 100)
-    print(py_chunks[0])
+    for i in range(10):
+        print("_" * 200)
+        print(py_chunks[i])
+        print()
 
     #tokenizing
 

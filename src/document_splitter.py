@@ -58,7 +58,7 @@ class PythonSplitter():
     def __init__(self, chunk_size=2000, overlap_size=100) -> None:
         self.chunk_size = chunk_size
         self.overlap_size = overlap_size
-        self.separators = ["class", "def"]
+        self.separators = ["class", "def", 'if __name__ == "__main__"']
 
     def split_documents(self, documents: List[Document]) -> None:
         container: List[Document] = []
@@ -67,7 +67,7 @@ class PythonSplitter():
 
             container.extend(self.code_splitter(code.page_content, self.separators, code.metadata["source"]))
 
-        return container
+        return container[::-1]
     
     def code_splitter(self,
                         code: str,
@@ -103,7 +103,7 @@ class PythonSplitter():
                     end_index = start_index - 1
 
                 else:
-                    chunks.append(self.code_splitter(chunk, sep[1:], source))
+                    chunks += self.code_splitter(chunk, sep[1:], source)
 
             else:
                 chunks.append(Document(page_content=chunk,

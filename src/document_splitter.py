@@ -55,8 +55,62 @@ class RecursiveTextSplitter():
 
 
 class PythonSplitter():
-    def __init__(self, dotpy: List) -> None:
-        pass
+    def __init__(self, chunk_size=2000, overlap_size=100) -> None:
+        self.chunk_size = chunk_size
+        self.overlap_size = overlap_size
+        self.separators = ["class", "def"]
 
-    def split(self) -> None:
-        pass
+    def split_documents(self, documents: List[Document]) -> None:
+        container: List[Document] = []
+
+        for code in documents:
+
+            container.extend(self.code_splitter(code.page_content, self.separators, code.metadata["source"]))
+
+        return container
+    
+    def code_splitter(self,
+                        code: str,
+                        sep: List[str], 
+                        source: str) -> Document:
+
+        if (len(code) <= self.chunk_size):
+            return [Document(page_content=code,
+                             metadata={"source": source,
+                                        "first_character_index": 0,
+                                        "last_character_index":len(code)-1})]
+
+        chunks: List[int] = []
+        if not chunks:
+            end_index = len(code) - 1
+
+        while end_index > 0:
+            start_index = code[:end_index].rfind(sep[0])
+            if start_index == -1:
+                start_index = 0
+
+            chunk = code[start_index: end_index]
+            if not chunk:
+                break
+
+            if len(chunk) > self.chunk_size:
+                if len(sep) == 1:
+                    start_index = end_index - self.chunk_size
+                    chunks.append(Document(page_content=code[start_index: end_index],
+                                           metadata={"source": source,
+                                                     "first_character_index": start_index,
+                                                     "last_character_index": end_index}))
+                    end_index = start_index - 1
+
+                else:
+                    chunks.append(self.code_splitter(chunk, sep[1:], source))
+
+            else:
+                chunks.append(Document(page_content=chunk,
+                                      metadata={"source": source,
+                                                "first_character_index": start_index,
+                                                "last_character_index": end_index}))
+
+            end_index = start_index - 1
+
+        return chunks

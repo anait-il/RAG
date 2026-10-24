@@ -18,8 +18,10 @@ def main():
     print(f"number of files => {len(documents['md']+documents["txt"])}, number of chunks => {len(chunks)}")
 
     #chunk python files
-    py_splitter = PythonSplitter(documents["py"])
-    py_chunks = py_splitter.split()
+    py_splitter = PythonSplitter()
+    py_chunks = py_splitter.split_documents(documents["py"])
+    print("_" * 100)
+    print(py_chunks[0])
 
     #tokenizing
 
